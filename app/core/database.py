@@ -1,0 +1,27 @@
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import (
+    create_async_engine,
+    AsyncSession,
+    AsyncEngine
+)
+from app.core.config import settings
+
+
+class Database:
+    def __init__(self):
+        self.engine: AsyncEngine = create_async_engine(settings.DB_URL)
+
+    async def get_session(self) -> AsyncSession:
+        __async_session: sessionmaker = sessionmaker(
+            autocommit=False,
+            autoflush=False,
+            expire_on_commit=False,
+            class_=AsyncSession,
+            bind=self.engine
+        )
+        
+        session: AsyncSession = await __async_session()
+        return session
+    
+    async def create_tables(self) -> None:
+        pass
