@@ -24,4 +24,10 @@ class Database:
         return session
     
     async def create_tables(self) -> None:
-        pass
+        import app.models.__all_models
+        
+        print('Criando as tabelas no banco de dados')
+        async with self.engine.begin() as conn:
+            await conn.run_sync(settings.DBBaseModel.metadata.drop_all)
+            await conn.run_sync(settings.DBBaseModel.metadata.create_all)
+        print('Tabelas criadas com sucesso')
